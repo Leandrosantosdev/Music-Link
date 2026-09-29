@@ -1,0 +1,8 @@
+# Permite que todos os buscadores indexem o site
+User-agent: *
+Allow: /
+# Painel administrativo não deve aparecer nas buscas
+Disallow: /admin
+
+# ⚠️ ATUALIZE o domínio abaixo se o site for publicado em outro endereço
+Sitemap: https://seusite.com/sitemap.xml

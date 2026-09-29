@@ -1,0 +1,34 @@
+# ==========================================================
+# HEADERS DE SEGURANÇA — Hostinger (Apache / LiteSpeed)
+# Requer mod_headers habilitado (padrão no Hostinger).
+# O frame-ancestors NÃO funciona via <meta> no HTML;
+# por isso precisa vir aqui, como header HTTP real.
+# ==========================================================
+
+<IfModule mod_headers.c>
+  # Anti-clickjacking: impede que o site seja embutido em iframes
+  Header always set X-Frame-Options "DENY"
+
+  # Evita que o browser "adivinhe" o tipo de conteúdo (MIME sniffing)
+  Header always set X-Content-Type-Options "nosniff"
+
+  # Não envia o referrer completo para sites externos
+  Header always set Referrer-Policy "strict-origin-when-cross-origin"
+
+  # Desativa recursos sensíveis que o site não usa
+  Header always set Permissions-Policy "camera=(), microphone=(), geolocation=(), payment=()"
+
+  # Content-Security-Policy como header HTTP (mais seguro que <meta>)
+  # Nota: frame-ancestors só é respeitado aqui.
+  Header always set Content-Security-Policy "default-src 'self'; script-src 'self' https://www.googletagmanager.com https://*.googletagmanager.com https://www.clarity.ms; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com data:; img-src 'self' data: https: blob:; media-src 'self' blob:; connect-src 'self' https://*.supabase.co https://*.supabase.in https://*.google-analytics.com https://*.analytics.google.com https://www.googletagmanager.com https://*.g.doubleclick.net https://*.clarity.ms; frame-ancestors 'none'; base-uri 'self'; form-action 'self'"
+</IfModule>
+
+# SPA fallback: Rotas como /admin servem o index.html
+<IfModule mod_rewrite.c>
+  RewriteEngine On
+  RewriteBase /
+  RewriteRule ^index\.html$ - [L]
+  RewriteCond %{REQUEST_FILENAME} !-f
+  RewriteCond %{REQUEST_FILENAME} !-d
+  RewriteRule . /index.html [L]
+</IfModule>
